@@ -17,7 +17,7 @@ export default class extends BaseSchema {
       table.boolean('isAdmin').defaultTo(false)
       table.timestamp('created_at').notNullable()
       table.timestamp('updated_at').nullable()
-      table.integer('job_id').unsigned().references('jobs.id').notNullable()
+      table.integer('job_id').unsigned().references('job.id').onDelete('SET NULL').notNullable()
     })
   }
 

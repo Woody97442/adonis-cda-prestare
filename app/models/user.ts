@@ -2,8 +2,10 @@ import { DateTime } from 'luxon'
 import { withAuthFinder } from '@adonisjs/auth'
 import hash from '@adonisjs/core/services/hash'
 import { compose } from '@adonisjs/core/helpers'
-import { BaseModel, column } from '@adonisjs/lucid/orm'
+import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm'
 import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
+import Job from '#models/job'
+import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 
 const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
   uids: ['email'],
@@ -24,10 +26,13 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare area: string
 
   @column()
-  declare job_id: number
+  declare tel: string
+
+  @belongsTo(() => Job)
+  declare job: BelongsTo<typeof Job>
 
   @column()
-  declare tel: string
+  declare jobId: number
 
   // image uplaod file URL
   @column()
@@ -52,4 +57,5 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare updatedAt: DateTime | null
 
   static accessTokens = DbAccessTokensProvider.forModel(User)
+
 }

@@ -1,6 +1,4 @@
-import { BaseModel, column, hasOne } from '@adonisjs/lucid/orm'
-import type { HasOne } from '@adonisjs/lucid/types/relations'
-import User from './user.js'
+import { BaseModel, column } from '@adonisjs/lucid/orm'
 
 export default class Job extends BaseModel {
   @column({ isPrimary: true })
@@ -8,9 +6,5 @@ export default class Job extends BaseModel {
 
   @column()
   declare name: string
-
-  // Relation table User
-  @hasOne(() => User)
-  declare user: HasOne<typeof User>
 
 }

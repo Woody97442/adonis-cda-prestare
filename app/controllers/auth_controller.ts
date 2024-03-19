@@ -52,7 +52,7 @@ export default class AuthController {
         area: area,
         tel: tel,
         des: des,
-        job_id: jobExist.id,
+        jobId: jobExist.id,
         img: filename,
       })
 
@@ -85,9 +85,14 @@ export default class AuthController {
         return response.badRequest({ message: 'Invalid password' })
       }
 
+      const isEnabled = user.enabled
+      if (!isEnabled) {
+        return response.unauthorized({ message: 'Your account is not verified' })
+      }
+
       const token = await User.accessTokens.create(user)
 
-      return response.ok({ token: token, message: 'Login successful' })
+      return response.ok({ token: token.value!.release(), message: 'Login successful' })
 
     } catch (error) {
       console.log(error)
