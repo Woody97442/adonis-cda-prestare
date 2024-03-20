@@ -73,17 +73,16 @@ export default class UsersController {
 
       const newFilename = `${cuid()}.${image.extname}`
 
-      const lastFilename = user?.img
+      const lastFilename = user.img
       // Vérifie si le fichier existe
       if (lastFilename) {
         try {
-          await fs.access(`public/uploads/${lastFilename}`);
+          await fs.access(`public/uploads/${lastFilename}`)
           // Le fichier existe, vous pouvez procéder à la suppression
-          await fs.unlink(`public/uploads/${lastFilename}`);
-          console.log('Fichier supprimé avec succès.');
+          await fs.unlink(`public/uploads/${lastFilename}`)
         } catch (error) {
           // Une erreur s'est produite lors de l'accès ou le fichier n'existe pas
-          console.error('Le fichier n\'existe pas ou une erreur est survenue :', error);
+          console.error('Le fichier n\'existe pas ou une erreur est survenue :', error)
         }
       }
 
@@ -109,10 +108,6 @@ export default class UsersController {
 
       if (!password || !oldPassword) {
         return response.badRequest({ message: 'Missing required fields' })
-      }
-
-      if (password === oldPassword) {
-        return response.badRequest({ message: 'New password cannot be the same as old password' })
       }
 
       const isPasswordValid = await hash.verify(user.password, oldPassword)
@@ -175,10 +170,13 @@ export default class UsersController {
       }
 
       // Check is job exist
-      const jobExist = await Job.findBy('id', job);
-      if (!jobExist) {
-        return response.badRequest({ message: 'Job not found' })
+      if (job) {
+        const jobExist = await Job.findBy('id', job);
+        if (!jobExist) {
+          return response.badRequest({ message: 'Job not found' })
+        }
       }
+
 
       if (name || email || area || tel || job || des) {
         user.name = name || user.name
@@ -229,7 +227,6 @@ export default class UsersController {
           await fs.access(`public/uploads/${lastFilename}`);
           // Le fichier existe, vous pouvez procéder à la suppression
           await fs.unlink(`public/uploads/${lastFilename}`);
-          console.log('Fichier supprimé avec succès.');
         } catch (error) {
           // Une erreur s'est produite lors de l'accès ou le fichier n'existe pas
           console.error('Le fichier n\'existe pas ou une erreur est survenue :', error);
@@ -259,19 +256,10 @@ export default class UsersController {
         return response.notFound({ message: 'User not found' })
       }
 
-      const { oldPassword, password } = request.all()
+      const { password } = request.all()
 
-      if (!password || !oldPassword) {
+      if (!password) {
         return response.badRequest({ message: 'Missing required fields' })
-      }
-
-      if (password === oldPassword) {
-        return response.badRequest({ message: 'New password cannot be the same as old password' })
-      }
-
-      const isPasswordValid = await hash.verify(user.password, oldPassword)
-      if (!isPasswordValid) {
-        return response.badRequest({ message: 'Invalid oldPassword' })
       }
 
       user.password = password
