@@ -130,20 +130,30 @@ export default class UsersController {
   }
 
   // CRUD User Admin
-  async getUsersWithAdmin({ response }: HttpContext) {
-    const users = await User.findManyBy('isadmin', "0")
-    const usersInfo: User[] = []
-    users.map(user => {
-      const { password, isAdmin, ...userInfo } = user.$attributes
-      usersInfo.push(userInfo as User)
-    })
-    return response.ok(usersInfo)
+  async getUsersWithoutAdmin({ response }: HttpContext) {
+    try {
+      const users = await User.findManyBy('isadmin', "0")
+      if (!users) {
+        return response.notFound({ message: 'Users not found' })
+      }
+
+      const usersInfo: User[] = []
+      users.map(user => {
+        const { password, isAdmin, ...userInfo } = user.$attributes
+        usersInfo.push(userInfo as User)
+      })
+      return response.ok(usersInfo)
+    } catch (error) {
+      console.log(error)
+      return response.internalServerError({ message: 'An error occured during users get' })
+    }
+
   }
 
   async getUser({ request, response }: HttpContext) {
     try {
-      const { id } = request.all()
-      const user = await User.find(id)
+      const idUser = request.params().id
+      const user = await User.find(idUser)
       if (!user) {
         return response.notFound({ message: 'User not found' })
       }

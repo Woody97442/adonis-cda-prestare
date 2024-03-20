@@ -27,8 +27,8 @@ router.group(() => {
 
 // Routes requiring authentication and admin
 router.group(() => {
-  router.get('/users', '#controllers/users_controller.getUsersWithAdmin')
-  router.get('/user', '#controllers/users_controller.getUser')
+  router.get('/users', '#controllers/users_controller.getUsersWithoutAdmin')
+  router.get('/user/:id', '#controllers/users_controller.getUser')
   router.patch('/user/:id', '#controllers/users_controller.updateUserWithId')
   router.patch('/user/:id/img', '#controllers/users_controller.updateProfileImageWithId')
   router.patch('/user/:id/password', '#controllers/users_controller.updateProfilePasswordWithId')
